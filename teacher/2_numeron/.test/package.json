@@ -1,0 +1,10 @@
+{
+  "name": "numeron",
+  "version": "1.0.0",
+  "description": "education material",
+  "type": "module",
+  "main": "test.js",
+  "scripts": {
+    "test": "node test.js"
+  }
+}
