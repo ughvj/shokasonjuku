@@ -1,0 +1,58 @@
+[
+  {
+    "rarity": "ssr",
+    "name": "すごいネコ"
+  },
+  {
+    "rarity": "ssr",
+    "name": "やばいイヌ"
+  },
+  {
+    "rarity": "sr",
+    "name": "かわいいネコ"
+  },
+  {
+    "rarity": "sr",
+    "name": "かがやくイヌ"
+  },
+  {
+    "rarity": "sr",
+    "name": "いいワニ"
+  },
+  {
+    "rarity": "r",
+    "name": "わるいサメ"
+  },
+  {
+    "rarity": "r",
+    "name": "つよいサル"
+  },
+  {
+    "rarity": "r",
+    "name": "ねているネコ"
+  },
+  {
+    "rarity": "r",
+    "name": "おなかをすかせたイヌ"
+  },
+  {
+    "rarity": "n",
+    "name": "ふつうのネコ"
+  },
+  {
+    "rarity": "n",
+    "name": "ふつうのイヌ"
+  },
+  {
+    "rarity": "n",
+    "name": "ふつうのサメ"
+  },
+  {
+    "rarity": "n",
+    "name": "ふつうのワニ"
+  },
+  {
+    "rarity": "n",
+    "name": "ふつうのサル"
+  }
+]
