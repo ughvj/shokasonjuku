@@ -1,4 +1,4 @@
-import { init, getRandomInt, setRarity } from "./_/_.js";
+import { init, getRandomInt, setRarity } from "./._/_.js";
 
 const ssr_prob = 3;
 const sr_prob = 10;
