@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ねこジャンプ</title>
+    <link rel="stylesheet" href="._/_.css" />
+  </head>
+  <body>
+    <div class="score-container">
+      <div class="score-display">
+        <div class="score-label">🐟</div>
+        <div class="score-value" id="itemCntDisplay">0</div>
+      </div>
+    </div>
+
+    <div class="game-container">
+      <canvas id="gameCanvas" width="600" height="400"></canvas>
+      <div class="controls-info">← → : 移動　　Space : ジャンプ</div>
+      <div class="time-info" id="timer">10:00</div>
+      <div id="openingOverlay">
+        <div class="opening-container">
+          <h1 class="opening-title">ねこジャンプ</h1>
+          <h2 class="opening-subtitle play">Enterで開始</h2>
+        </div>
+      </div>
+      <div id="victoryOverlay">
+        <div class="victory-container">
+          <h1 class="victory-title">ゲームクリア！</h1>
+          <h2 class="victory-subtitle play">Enterでリプレイ</h2>
+        </div>
+      </div>
+      <div id="gameOverOverlay">
+        <div class="game-over-container">
+          <h1 class="game-over-title">ゲームオーバー</h1>
+          <h2 class="game-over-subtitle play">Enterでリプレイ</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="score-container">
+      <div class="score-display">
+        <div class="score-label">🐭</div>
+        <div class="score-value" id="obsCntDisplay">0</div>
+      </div>
+    </div>
+
+    <script type="module" src="._/_.js"></script>
+  </body>
+</html>

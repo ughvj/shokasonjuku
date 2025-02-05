@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>テスト結果ビューワー🤖</title>
+    <style>
+      body {
+        background: #1a1b26;
+        color: #a9b1d6;
+        font-family: "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .start-button {
+        background: #7aa2f7;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 25px;
+        font-size: 1.2em;
+        margin: 20px;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 0 15px rgba(122, 162, 247, 0.3);
+      }
+
+      .start-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px rgba(122, 162, 247, 0.5);
+      }
+
+      .main-container {
+        display: flex;
+        gap: 20px;
+        width: 90%;
+        max-width: 1200px;
+      }
+
+      .test-container {
+        flex: 1;
+        min-width: 300px;
+      }
+
+      .details-container {
+        flex: 1;
+        min-width: 300px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 20px;
+        color: #1a1a1a;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        position: sticky;
+        top: 20px;
+        max-height: 80vh;
+        display: none;
+        overflow-y: auto;
+        transition: background-color 0.3s ease;
+      }
+
+      .details-success {
+        background: linear-gradient(
+          45deg,
+          rgba(158, 206, 106, 0.85),
+          rgba(115, 218, 202, 0.85)
+        );
+        border: 1px solid rgba(158, 206, 106, 0.9);
+      }
+
+      .details-failure {
+        background: linear-gradient(
+          45deg,
+          rgba(247, 118, 142, 0.85),
+          rgba(255, 158, 100, 0.85)
+        );
+        border: 1px solid rgba(247, 118, 142, 0.9);
+      }
+
+      .details-pending {
+        background: linear-gradient(
+          45deg,
+          rgba(150, 153, 163, 0.85),
+          rgba(122, 125, 133, 0.85)
+        );
+        border: 1px solid rgba(150, 153, 163, 0.9);
+      }
+
+      .details-success .section-header,
+      .details-failure .section-header,
+      .details-pending .section-header {
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(2px);
+      }
+
+      .details-success .section-header:hover,
+      .details-failure .section-header:hover,
+      .details-pending .section-header:hover {
+        background: rgba(255, 255, 255, 0.35);
+      }
+
+      .section-content {
+        background: rgba(255, 255, 255, 0.95);
+      }
+
+      .test-item {
+        margin: 15px 0;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s;
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .test-header {
+        padding: 15px;
+        font-size: 1.1em;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .success {
+        background: linear-gradient(45deg, #9ece6a, #73daca);
+        color: #1a1a1a;
+      }
+
+      .failure {
+        background: linear-gradient(45deg, #f7768e, #ff9e64);
+        color: #1a1a1a;
+      }
+
+      .pending {
+        background: linear-gradient(45deg, #9699a3, #7a7d85);
+        color: #1a1a1a;
+      }
+
+      .test-icon {
+        margin-right: 10px;
+        font-size: 1.2em;
+      }
+
+      .selected {
+        transform: scale(1.02);
+        box-shadow: 0 0 20px rgba(122, 162, 247, 0.5);
+      }
+
+      .details-title {
+        font-size: 1.3em;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #1a1a1a;
+      }
+
+      .details-section {
+        margin: 10px 0;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .section-header {
+        padding: 12px 15px;
+        background: rgba(122, 162, 247, 0.1);
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        user-select: none;
+      }
+
+      .section-header:hover {
+        background: rgba(122, 162, 247, 0.2);
+      }
+
+      .section-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+      }
+
+      .section-content {
+        padding: 15px;
+        display: none;
+        background: white;
+        line-height: 1.6;
+      }
+
+      .section-content.open {
+        display: block;
+        animation: slideDown 0.3s ease-out;
+      }
+
+      @keyframes appear {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate {
+        animation: appear 0.5s ease-out forwards;
+      }
+
+      .animate-slide {
+        animation: slideIn 0.3s ease-out forwards;
+      }
+    </style>
+  </head>
+  <body>
+    <button class="start-button" onclick="runTests()">テストを開始 🚀</button>
+    <div class="main-container">
+      <div class="test-container" id="testContainer"></div>
+      <div class="details-container" id="detailsContainer"></div>
+    </div>
+
+    <script>
+      // テストケースの定義
+      let tests = [
+        {
+          name: "データベース接続テスト",
+          details: {
+            expected:
+              "• 接続タイムアウト: 5秒以内\n• 認証情報: 有効なクレデンシャル\n• 接続プール: 最小5 / 最大20の接続数\n• レスポンスタイム: 100ms以内",
+            actual:
+              "• 接続タイムアウト: 3.2秒\n• 認証情報: 正常に認証完了\n• 接続プール: 現在10接続を確保\n• レスポンスタイム: 82ms",
+          },
+        },
+        {
+          name: "ユーザー登録機能",
+          details: {
+            expected:
+              "• メールアドレス: 有効なフォーマット\n• パスワード: 8文字以上の英数字\n• ユーザー名: 3-20文字以内\n• 登録完了メール: 1分以内に送信",
+            actual:
+              "• メールアドレス: バリデーション成功\n• パスワード: 要件を満たすことを確認\n• ユーザー名: 有効な長さを確認\n• メール送信: 23秒で完了",
+          },
+        },
+        {
+          name: "ログイン認証",
+          details: {
+            expected:
+              "• パスワード照合: 1秒以内\n• セッショントークン: JWT形式\n• セッション有効期限: 24時間\n• 失敗時のロック: 5回試行で30分間",
+            actual:
+              "• パスワード照合: 0.8秒で完了\n• トークン生成: 正常に完了\n• 有効期限: 設定値通り\n• ロック機能: 正常に動作",
+          },
+        },
+        {
+          name: "データ保存テスト",
+          details: {
+            expected:
+              "• トランザクション: ACID準拠\n• データ整合性: 参照整合性を維持\n• バックアップ: 1時間ごとに実行\n• ロールバック: エラー時に自動実行",
+            actual:
+              "• トランザクション: 正常に完了\n• 整合性チェック: 問題なし\n• バックアップ: スケジュール通り実行\n• 例外処理: 正常に動作",
+          },
+        },
+      ];
+
+      // テストケースが10個未満の場合、空のスロットで埋める
+      while (tests.length < 10) {
+        tests.push({
+          name: `テストスロット ${tests.length + 1}`,
+          details: {
+            expected:
+              "このテストスロットは現在未使用です。\n新しいテストケースを追加することができます。",
+            actual: "テスト結果はまだありません。",
+          },
+          isEmpty: true,
+        });
+      }
+
+      function toggleSection(header) {
+        const content = header.nextElementSibling;
+        const arrow = header.querySelector(".section-arrow");
+        content.classList.toggle("open");
+        arrow.textContent = content.classList.contains("open") ? "▼" : "▶";
+      }
+
+      function showDetails(test, element) {
+        const detailsContainer = document.getElementById("detailsContainer");
+
+        // 選択状態の更新
+        document
+          .querySelectorAll(".test-item")
+          .forEach((item) => item.classList.remove("selected"));
+        element.classList.add("selected");
+
+        // 詳細コンテナのスタイル設定
+        const isSuccess = element.classList.contains("success");
+        const isFailure = element.classList.contains("failure");
+        const isPending = element.classList.contains("pending");
+
+        detailsContainer.className = "details-container";
+        if (isSuccess) {
+          detailsContainer.classList.add("details-success");
+        } else if (isFailure) {
+          detailsContainer.classList.add("details-failure");
+        } else if (isPending) {
+          detailsContainer.classList.add("details-pending");
+        }
+
+        // 詳細の更新
+        detailsContainer.innerHTML = `
+                <div class="details-title">${test.name}</div>
+                <div class="details-section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <div class="section-title">
+                            <span>📋 期待値 (Expected)</span>
+                        </div>
+                        <span class="section-arrow">▶</span>
+                    </div>
+                    <div class="section-content">
+                        ${test.details.expected.split("\n").join("<br>")}
+                    </div>
+                </div>
+                <div class="details-section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <div class="section-title">
+                            <span>🔍 実測値 (Actual)</span>
+                        </div>
+                        <span class="section-arrow">▶</span>
+                    </div>
+                    <div class="section-content">
+                        ${test.details.actual.split("\n").join("<br>")}
+                    </div>
+                </div>
+            `;
+
+        // 詳細コンテナの表示
+        detailsContainer.style.display = "block";
+        detailsContainer.classList.remove("animate-slide");
+        void detailsContainer.offsetWidth;
+        detailsContainer.classList.add("animate-slide");
+      }
+
+      function createTestElement(test, index) {
+        const div = document.createElement("div");
+        div.className = "test-item";
+        div.style.opacity = "0";
+        div.innerHTML = `
+                <div class="test-header">
+                    <span><span class="test-icon">🔍</span>${test.name}</span>
+                    <span class="status"></span>
+                </div>
+            `;
+
+        div.addEventListener("click", () => showDetails(test, div));
+        return div;
+      }
+
+      function runTests() {
+        const container = document.getElementById("testContainer");
+        const detailsContainer = document.getElementById("detailsContainer");
+        container.innerHTML = "";
+        detailsContainer.style.display = "none";
+
+        tests.forEach((test, index) => {
+          const testElement = createTestElement(test, index);
+          container.appendChild(testElement);
+
+          setTimeout(() => {
+            if (test.isEmpty) {
+              testElement.classList.add("pending");
+              testElement.querySelector(".status").textContent = "💫 空き";
+            } else {
+              const success = Math.random() > 0.3;
+              testElement.classList.add(success ? "success" : "failure");
+              testElement.querySelector(".status").textContent = success
+                ? "✅ 成功"
+                : "❌ 失敗";
+            }
+            testElement.classList.add("animate");
+          }, index * 500);
+        });
+      }
+
+      // 初期表示時にテスト項目を表示
+      tests.forEach((test, index) => {
+        const testElement = createTestElement(test, index);
+        document.getElementById("testContainer").appendChild(testElement);
+        setTimeout(() => {
+          testElement.classList.add("animate");
+        }, index * 100);
+      });
+    </script>
+  </body>
+</html>
